@@ -4,13 +4,15 @@ import time
 import cv2
 
 camera = PiCamera()
-camera.resolution = (640, 480)
+camera.resolution = (1600, 900)
 camera.framerate = 90
-rawCapture = PiRGBArray(camera, size=(640, 480))
+rawCapture = PiRGBArray(camera, size=(1600, 900))
 
 time.sleep(0.2)
 
 i = 0;
+dx = [0,0]
+prev = []
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port = True):
 	image = frame.array
@@ -29,7 +31,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port 
     		flags = cv2.cv.CV_HAAR_SCALE_IMAGE
 	)
 	#Draw bounding boxes
-	for (x, y, w, h) in faces:
+	if (len(faces) != 0):
+		x, y, w, h = faces[0]
 		cv2.rectangle(image, (x,y), (x+w, y+h), (0, 255, 0), 2)
 
 	cv2.imwrite("vid/test"+str(i)+".jpg", image)
