@@ -20,7 +20,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port 
 	key = cv2.waitKey(1) & 0xFF
 
 	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
+	#Apply classifier
 	faces = faceCascade.detectMultiScale(
     		gray,
     		scaleFactor=1.2,
@@ -28,7 +28,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port 
     		minSize=(30, 30),
     		flags = cv2.cv.CV_HAAR_SCALE_IMAGE
 	)
-
+	#Draw bounding boxes
 	for (x, y, w, h) in faces:
 		cv2.rectangle(image, (x,y), (x+w, y+h), (0, 255, 0), 2)
 
