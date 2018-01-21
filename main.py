@@ -2,17 +2,23 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
-
 camera = PiCamera()
-camera.resolution = (1600, 900)
+
+camera.resolution = (800, 600)
 camera.framerate = 90
-rawCapture = PiRGBArray(camera, size=(1600, 900))
+rawCapture = PiRGBArray(camera, size=(800, 600))
 
+#Prepare camera
 time.sleep(0.2)
-
-i = 0;
-dx = [0,0]
-prev = []
+#do setup
+i = 0
+dx = 0
+currentPos = 0
+prevPos = 0
+criticalPos = 36
+averageFaceWidth = 6.5
+#0 is travel straight, 1 is avoid
+state = 0
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port = True):
 	image = frame.array
@@ -34,12 +40,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port 
 	if (len(faces) != 0):
 		x, y, w, h = faces[0]
 		cv2.rectangle(image, (x,y), (x+w, y+h), (0, 255, 0), 2)
+		currentPos = (2714 * averageFaceWidth)/w
+		dx = currentPos - prevPos
+		if (currentPos <= criticalPos):
+			state = 1;
+		prevPos = currentPos
 
-	cv2.imwrite("vid/test"+str(i)+".jpg", image)
+	if (state == 1):
+		#
+	else:
+		#
+
+	
 
 	i+=1
 
 	rawCapture.truncate(0)
-
-	if key==ord("q"):
-		break;
